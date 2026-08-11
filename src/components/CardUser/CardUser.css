@@ -1,0 +1,24 @@
+.card-user{
+    width: 220px;
+    padding: 16px;
+    border: 1px solid #000;
+    border-radius: 10px;
+    text-align: center;
+    background-color: #dcdcdc;
+    margin-top: 20px;
+}
+
+.card-user img{
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.card-user h2{
+    font-size: 38px;
+}
+
+.card-user span {
+    font-size: 24px;
+}
