@@ -6,20 +6,31 @@ const ExtrasBox = () => {
         <section className="category-section" id="adicionais">
             <div className="section-title">
                 <div className="icon">
-                    +
+                    <i className="fa-solid fa-plus"></i>
                 </div>
 
                 <h2>Adicionais</h2>
             </div>
 
             <div className="extras-box">
-                {extrasSections.map((item, idx) => (
+                {extrasSections.map((section) => (
                     <>
-                        <div key={idx} className="extra-line">
-                            <span>{item.title}</span>
+                        <div>
+                            {section.title}
+                        </div>  
+                        <div className="extras-grid">
+                            {section.items.map((item, idx) => (
+                                <div key={idx} className="extras-line">
+                                    <span>{item.name}</span>
+                                    <span className="price">{item.price}</span>
+                                </div>
+                            ))}
                         </div>
                     </>
                 ))}
+                <p className="extras-note">
+                    Máximo de 4 adicionais por produto. Consulte a disponibilidade.
+                </p>
             </div>
         </section>
     )
