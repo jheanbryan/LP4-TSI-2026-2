@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socket.io Chat</title>
+  <style>
+    body{
+      font-family: sans-serif;
+      padding-bottom: 3rem;
+    }
+
+    #form{
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      background-color: #dcdcdc;
+      padding: 0.5rem;
+    }
+    #input{
+      flex-grow: 1;
+      margin-right: 0.5rem;
+    }
+    #messages{
+      list-style: none;
+      padding: 5px;
+    }
+  </style>
+</head>
+<body>
+  <ul id="messages"></ul>
+  <form action="" id="form">
+    <input type="text" id="input">
+    <button>Enviar</button>
+  </form>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    const form = document.getElementById('form');
+    const input = document.getElementById('input');
+    const messages = document.getElementById('messages');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if(input.value){
+        socket.emit('chat message', input.value);
+        input.value = '';
+      }
+    })
+
+    socket.on('chat message', (data) => {
+      const item = document.createElement('li');
+      item.textContent = `${data.id}: ${data.text}`;
+      messages.appendChild(item);
+      window.scrollTo(0, document.body.scrollHeight)
+    })
+  </script>
+</body>
+</html>
