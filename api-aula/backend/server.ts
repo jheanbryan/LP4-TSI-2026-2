@@ -70,6 +70,57 @@ app.get("/posts", authMiddleware, async (req: AuthRequest, res) => {
   res.json(posts)
 })
 
+//busca todos os posts
+app.get("/posts/all", async (req, res) => {
+  const posts = await prisma.post.findMany({
+    include: {
+      author: { select: {id: true, name: true} },
+    },
+  });
+
+  res.json(posts)
+});
+
+
+//editar um post (do dono)
+app.patch("/posts/:id", authMiddleware, async (req: AuthRequest, res) => {
+  const id = Number(req.params.id)
+
+  if (Number.isNaN(id)) return res.status(400).json({ error: "ID Inválido" });
+
+  const post = await prisma.post.findUnique({ where: { id } });
+  if (!post) return res.status(404).json({ error: "Post não encontrado" });
+  if(post.authorId !== req.userId) {
+    return res.status(403).json({ error: "Voce não pode editar esse post" });
+  }
+
+  const { title, content, published } = req.body;
+  const updated = await prisma.post.update({
+    where: { id },
+    data: { title, content, published }
+  });
+
+  res.json(updated);
+})
+
+
+//deletar um post (so do dono)
+app.delete("/posts/:id", authMiddleware, async(req: AuthRequest, res)=> {
+  const id = Number(req.params.id)
+
+  if (Number.isNaN(id)) return res.status(400).json({ error: "ID Inválido" });
+
+  
+  const post = await prisma.post.findUnique({ where: { id } });
+  if (!post) return res.status(404).json({ error: "Post não encontrado" });
+  if(post.authorId !== req.userId) {
+    return res.status(403).json({ error: "Voce não pode deletar esse post" });
+  }
+
+  await prisma.post.delete({ where: { id } });
+  res.json({ message: "Post deletado com sucesso" })
+})
+
 
 app.listen(3000, () => {
   console.log("Rodando em http://localhost:3000")
